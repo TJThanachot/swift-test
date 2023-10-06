@@ -1,0 +1,19 @@
+$primary: #ffa200;
+$secondary: #6eda78;
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  background-image: linear-gradient(to right, $secondary, $primary);
+
+  .container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    .items {
+      width: 80vw;
+    }
+  }
+}
