@@ -1,38 +1,30 @@
 import React from "react";
-import { Divider, Table } from "antd";
-
+import { Table, Button, Popconfirm, message, Checkbox } from "antd";
+import { useSelector, useDispatch } from "react-redux";
 import type { ColumnsType, TableProps } from "antd/es/table";
+import { deleteUser } from "../slices/userSlice";
+import { setStatus } from "../slices/statusSlice";
 
 function FormTable() {
+  const userData = useSelector((state: any) => {
+    return state.userDataList;
+  });
+  const dispatch = useDispatch();
+
   interface DataType {
-    key: React.Key;
-    name: string;
-    phoneNumber: string;
+    key: number;
+    firstname: string;
+    phone: string;
     nationality: string;
     gender: string;
   }
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      filters: [
-        {
-          text: "Joe",
-          value: "Joe",
-        },
-        {
-          text: "Jim",
-          value: "Jim",
-        },
-      ],
-      // specify the condition of filtering result
-      // here is that finding the name started with `value`
-      onFilter: (value: string, record) => {
-        record.name.indexOf(value) === 0;
-      },
+      title: "name",
+      dataIndex: "firstname",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.name.length - b.name.length,
+      sorter: (a, b) => a.firstname.length - b.firstname.length,
     },
     {
       title: "gender",
@@ -57,7 +49,7 @@ function FormTable() {
     },
     {
       title: "phone number",
-      dataIndex: "phoneNumber",
+      dataIndex: "phone",
       filters: [
         {
           text: "+66",
@@ -72,10 +64,9 @@ function FormTable() {
           value: "+77",
         },
       ],
-      onFilter: (value: string, record) =>
-        record.phoneNumber.indexOf(value) === 0,
+      onFilter: (value: string, record) => record.phone.indexOf(value) === 0,
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.phoneNumber.length - b.phoneNumber.length,
+      sorter: (a, b) => a.phone.length - b.phone.length,
     },
     {
       title: "nationality",
@@ -99,93 +90,6 @@ function FormTable() {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Britain",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Thai",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      phoneNumber: "+66",
-      gender: "female",
-      nationality: "Thai",
-    },
-    {
-      key: "4",
-      name: "Jim Red",
-      phoneNumber: "+69",
-      gender: "none",
-      nationality: "Thai",
-    },
-    {
-      key: "5",
-      name: "John Brown",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Britain",
-    },
-    {
-      key: "6",
-      name: "Jim Green",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Thai",
-    },
-    {
-      key: "7",
-      name: "Joe Black",
-      phoneNumber: "+66",
-      gender: "female",
-      nationality: "Thai",
-    },
-    {
-      key: "8",
-      name: "Jim Red",
-      phoneNumber: "+69",
-      gender: "none",
-      nationality: "Thai",
-    },
-    {
-      key: "9",
-      name: "John Brown",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Britain",
-    },
-    {
-      key: "10",
-      name: "Jim Green",
-      phoneNumber: "+77",
-      gender: "male",
-      nationality: "Thai",
-    },
-    {
-      key: "11",
-      name: "Joe Black",
-      phoneNumber: "+66",
-      gender: "female",
-      nationality: "Thai",
-    },
-    {
-      key: "12",
-      name: "Jim Red",
-      phoneNumber: "+69",
-      gender: "none",
-      nationality: "Thai",
-    },
-  ];
-
   const onChange: TableProps<DataType>["onChange"] = (
     pagination,
     filters,
@@ -195,19 +99,44 @@ function FormTable() {
     console.log("params", pagination, filters, sorter, extra);
   };
 
+  let keyForDelete: number[];
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        "selectedRows: ",
-        selectedRows
-      );
+      keyForDelete = selectedRowKeys;
     },
+  };
+
+  const onCheckAllChange = (e: CheckboxChangeEvent) => {
+    console.log(e.target.checked);
+    if (e.target.checked === true) {
+      keyForDelete = userData.map((item, index) => {
+        return item.key;
+      });
+      console.log(keyForDelete);
+    } else {
+      keyForDelete = [];
+      console.log(keyForDelete);
+    }
   };
 
   return (
     <div className="tableContainer">
-      <Divider />
+      <div className="deleteButton">
+        <Checkbox onChange={onCheckAllChange}>select all user</Checkbox>
+        <Popconfirm
+          title="Sure to delete?"
+          onConfirm={() => {
+            if (keyForDelete.length > 0) {
+              dispatch(deleteUser(keyForDelete));
+              message.success("You have deleted some profile successfully.");
+            } else {
+              message.error("You did not select any row.");
+            }
+          }}
+        >
+          <Button>delete user data</Button>
+        </Popconfirm>
+      </div>
       <Table
         className="table"
         rowSelection={{
@@ -215,8 +144,17 @@ function FormTable() {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={data}
+        dataSource={userData}
         onChange={onChange}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (e) => {
+              const index = userData.indexOf(record);
+              const value: any = { index: index, boolean: true };
+              dispatch(setStatus(value));
+            },
+          };
+        }}
       />
     </div>
   );

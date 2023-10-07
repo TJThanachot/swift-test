@@ -8,11 +8,26 @@ import {
   Radio,
   DatePicker,
   Divider,
+  message,
 } from "antd";
-
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser, updateUser, deleteUser } from "../slices/userSlice";
+import { setStatus } from "../slices/statusSlice";
 // import { useTranslation } from "react-i18next";
 function FormSubmit() {
   // const { t, i18n } = useTranslation();
+  // redux state ---------------------------------------------------------
+  const userData = useSelector((state: any) => {
+    return state.userDataList;
+  });
+  const status = useSelector((state: any) => {
+    return state.status;
+  });
+  const dispatch = useDispatch();
+
+  // console.log(status);
+  // console.log(userData);
 
   const { Option } = Select;
 
@@ -21,7 +36,7 @@ function FormSubmit() {
   const onFinish = (values: any) => {
     values.idNumber = `${values.idNumberInput1}-${values.idNumberInput2}-${values.idNumberInput3}-${values.idNumberInput4}-${values.idNumberInput5}`;
     values.phone = `${values.phoneInput1}-${values.phoneInput2}`;
-    values.dateOfBirth = new Date(values.dateOfBirth.$d);
+    values.dateOfBirth = String(values.dateOfBirth.$d);
 
     // delete key values that is not necessary ------------------------------------
     for (let i = 1; i <= 5; i++) {
@@ -35,12 +50,28 @@ function FormSubmit() {
       }
     }
 
-    console.log(values);
+    // console.log(values);
+    if (status.boolean === true) {
+      const newValues: any = { values, index: status.index };
+      dispatch(updateUser(newValues));
+      message.success("You have updated your profile successfully.");
+    } else {
+      dispatch(addUser(values));
+      message.success("You have created your profile successfully.");
+    }
+
+    const value: any = { index: null, boolean: false };
+    dispatch(setStatus(value));
+    form.resetFields();
   };
 
   const onReset = () => {
     form.resetFields();
   };
+
+  useEffect(() => {
+    form.resetFields();
+  }, [status]);
   return (
     <div className="test3Container">
       <Divider />
@@ -49,6 +80,43 @@ function FormSubmit() {
         name="control-hooks"
         onFinish={onFinish}
         className="test3Form"
+        initialValues={
+          status.boolean === false
+            ? {
+                prefix: null,
+                firstname: "",
+                lastname: "",
+                dateOfBirth: "",
+                nationality: "",
+                gender: "",
+                idNumberInput1: "",
+                idNumberInput2: "",
+                idNumberInput3: "",
+                idNumberInput4: "",
+                idNumberInput5: "",
+                phoneInput1: "",
+                phoneInput2: "",
+                passportId: "",
+                expectedSalary: "",
+              }
+            : {
+                prefix: userData[status.index].prefix,
+                firstname: userData[status.index].firstname,
+                lastname: userData[status.index].lastname,
+                dateOfBirth: "",
+                nationality: "",
+                gender: "",
+                idNumberInput1: "",
+                idNumberInput2: "",
+                idNumberInput3: "",
+                idNumberInput4: "",
+                idNumberInput5: "",
+                phoneInput1: "",
+                phoneInput2: "",
+                passportId: "",
+                expectedSalary: "",
+              }
+        }
       >
         {/* first row ---------------------------------------------------------- */}
 
@@ -61,7 +129,7 @@ function FormSubmit() {
                 { required: true, message: "Please select your prefix!" },
               ]}
             >
-              <Select placeholder="Select a prefix" allowClear>
+              <Select placeholder="Select a prefix">
                 <Option value="Mr.">Mr.</Option>
                 <Option value="Ms.">Ms.</Option>
                 <Option value="Mrs.">Mrs.</Option>
