@@ -20,6 +20,9 @@ $secondary: #6eda78;
       &:hover {
         background-color: $primary;
       }
+      &:active {
+        background-color: $secondary;
+      }
       .middleButton {
         display: flex;
         gap: 6rem;
@@ -50,8 +53,14 @@ $secondary: #6eda78;
   border-left: 40px solid transparent;
   border-right: 40px solid transparent;
   width: 145px;
+  &:hover {
+    border-bottom: 100px solid white;
+    background-color: $primary !important;
+  }
+  &:active {
+    background-color: $secondary !important;
+  }
 }
-
 .parallelogram {
   width: 170px;
   height: 100px;
@@ -82,4 +91,10 @@ $secondary: #6eda78;
   border-top: 50px solid transparent;
   border-left: 100px solid gray;
   border-bottom: 50px solid transparent;
+}
+
+.shape {
+  &:hover {
+    background-color: white;
+  }
 }

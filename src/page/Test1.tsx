@@ -1,7 +1,6 @@
 import "../scss/Test1.scss";
-import { Card, Row, Col, Button } from "antd";
+import { Card, Row, Col } from "antd";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ChangeLangBar from "../compernent/changeLangBar";
 import { useTranslation } from "react-i18next";
 
@@ -26,20 +25,10 @@ function Test1() {
     return arr;
   }
 
-  const nav = useNavigate();
-
   return (
     <div>
       <ChangeLangBar />
       <div className="testContainer">
-        <Button
-          type="text"
-          onClick={() => {
-            nav("/");
-          }}
-        >
-          {t("Back to home page")}
-        </Button>
         <h1>{t("Layout & Style")}</h1>
 
         {/* button ----------------------------------------------------------- */}
@@ -109,14 +98,14 @@ function Test1() {
               >
                 <Card
                   hoverable
-                  className="test1Card"
+                  className="test1Card shape"
                   onClick={() => {
                     const newShape = [...shape];
                     randomShape(newShape);
                     setShape(newShape);
                   }}
                 >
-                  <div className={item}></div>
+                  <div className={`${item} shape`}></div>
                 </Card>
               </Col>
             );
