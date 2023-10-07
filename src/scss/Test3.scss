@@ -1,0 +1,25 @@
+.test3Container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .test3Form {
+    width: 66rem;
+    border: solid 2px gray;
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+}
+
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .table {
+    width: 90%;
+  }
+}

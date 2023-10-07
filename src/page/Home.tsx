@@ -2,8 +2,10 @@ import { Card, List } from "antd";
 import "../App.scss";
 import { useNavigate } from "react-router-dom";
 import ChangeLangBar from "../compernent/changeLangBar";
+import { useTranslation } from "react-i18next";
 
 function Home() {
+  const { t, i18n } = useTranslation();
   const nav = useNavigate();
   const data: any[] = [
     { content: "Layout & Style", title: "Test 1" },
@@ -31,12 +33,12 @@ function Home() {
             <Card
               key={index}
               hoverable
-              title={item.title}
+              title={t(item.title)}
               onClick={() => {
                 nav(`test${index + 1}`);
               }}
             >
-              {item.content}
+              {t(item.content)}
             </Card>
           </List.Item>
         )}
