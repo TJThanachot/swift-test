@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 function ChangeLangBar() {
+  const path = window.location.pathname;
   const nav = useNavigate();
   const { t, i18n } = useTranslation();
   //   console.log(i18n.language);
@@ -50,6 +51,7 @@ function ChangeLangBar() {
       }}
     >
       <Button
+        disabled={path === "/" ? true : false}
         onClick={() => {
           nav("/");
         }}

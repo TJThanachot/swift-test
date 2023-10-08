@@ -5,8 +5,9 @@ import { setStatus } from "../slices/statusSlice";
 import { setUserIdNumber } from "../slices/userIdNumberSlice";
 import { setUserPhoneNumber } from "../slices/userPhoneNumberSlice";
 import { Form, message } from "antd";
-
+import { useTranslation } from "react-i18next";
 function useForm() {
+  const { t, i18n } = useTranslation();
   // redux state ---------------------------------------------------------
   const userData = useSelector((state: any) => {
     return state.userDataList;
@@ -44,10 +45,10 @@ function useForm() {
     if (status.boolean === true) {
       const newValues: any = { values, index: status.index };
       dispatch(updateUser(newValues));
-      message.success("You have updated your profile successfully.");
+      message.success(t("You have updated your profile successfully."));
     } else {
       dispatch(addUser(values));
-      message.success("You have created your profile successfully.");
+      message.success(t("You have created your profile successfully."));
     }
     onReset();
   };

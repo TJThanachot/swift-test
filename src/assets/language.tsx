@@ -42,6 +42,8 @@ export const en: Record<string, any> = {
   "select all": "select all",
   "Sure to delete?": "Sure to delete?",
   "delete user data": "delete user data",
+  "delete": "delete",
+  "edit profile":"edit profile",
   
   //alert message----------------
   "You have deleted some profile successfully.":
@@ -95,6 +97,8 @@ export const th: Record<string, any> = {
   "select all": "เลือกทั้งหมด",
   "Sure to delete?": "แน่ใจหรือไม่",
   "delete user data": "ลบข้อมูล",
+  "delete": "ลบข้อมูล",
+  "edit profile":"แก้ไขข้อมูล",
 
   //alert message----------------
   "You have deleted some profile successfully.":

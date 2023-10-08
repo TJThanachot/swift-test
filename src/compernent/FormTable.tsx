@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Button, Popconfirm, message, Checkbox } from "antd";
+import { Table, Button, Popconfirm, message, Checkbox, Space } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { deleteUser } from "../slices/userSlice";
@@ -90,7 +90,34 @@ function FormTable() {
     },
     {
       title: t("manage"),
-      dataIndex: "manage",
+      key: "key",
+      render: (_, record) => (
+        <Space style={{ width: "6rem" }}>
+          <Button
+            onClick={() => {
+              const index = userData.indexOf(record);
+              const value: any = { index: index, boolean: true };
+              getPhoneNumber(index);
+              getIdNumber(index);
+              dispatch(setStatus(value));
+            }}
+          >
+            {t("edit profile")}
+          </Button>
+          <Popconfirm
+            title={t("Sure to delete?")}
+            onConfirm={() => {
+              console.log(record.key);
+              keyForDelete.push(record.key);
+              dispatch(deleteUser(keyForDelete));
+              message.success(t("You have deleted some profile successfully."));
+              keyForDelete = [];
+            }}
+          >
+            <Button>{t("delete")}</Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -134,6 +161,7 @@ function FormTable() {
             } else {
               message.error(t("You did not select any row."));
             }
+            keyForDelete = [];
           }}
         >
           <Button>{t("delete user data")}</Button>
@@ -148,17 +176,17 @@ function FormTable() {
         columns={columns}
         dataSource={userData}
         onChange={onChange}
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (e) => {
-              const index = userData.indexOf(record);
-              const value: any = { index: index, boolean: true };
-              getPhoneNumber(index);
-              getIdNumber(index);
-              dispatch(setStatus(value));
-            },
-          };
-        }}
+        // onRow={(record, rowIndex) => {
+        //   return {
+        //     onClick: (e) => {
+        //       const index = userData.indexOf(record);
+        //       const value: any = { index: index, boolean: true };
+        //       getPhoneNumber(index);
+        //       getIdNumber(index);
+        //       dispatch(setStatus(value));
+        //     },
+        //   };
+        // }}
       />
     </div>
   );

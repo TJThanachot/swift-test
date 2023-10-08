@@ -14,7 +14,7 @@ $secondary: #6eda78;
     .test1Card {
       height: 10rem;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       &:hover {
@@ -26,6 +26,18 @@ $secondary: #6eda78;
       .middleButton {
         display: flex;
         gap: 6rem;
+      }
+      .moveShape.middle {
+        margin-left: 5rem;
+        width: 50%;
+      }
+      .moveShape {
+        background-color: $secondary;
+        color: white;
+        text-align: center;
+        position: relative;
+        top: 2rem;
+        border-radius: 2rem;
       }
     }
   }
