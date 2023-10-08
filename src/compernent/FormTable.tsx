@@ -4,8 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import { deleteUser } from "../slices/userSlice";
 import { setStatus } from "../slices/statusSlice";
+import useForm from "../hooks/useForm";
+import { useTranslation } from "react-i18next";
 
 function FormTable() {
+  const { t, i18n } = useTranslation();
+  const { getIdNumber, getPhoneNumber } = useForm();
   const userData = useSelector((state: any) => {
     return state.userDataList;
   });
@@ -13,7 +17,7 @@ function FormTable() {
 
   interface DataType {
     key: number;
-    firstname: string;
+    fullName: string;
     phone: string;
     nationality: string;
     gender: string;
@@ -21,25 +25,25 @@ function FormTable() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "name",
-      dataIndex: "firstname",
+      title: t("full name"),
+      dataIndex: "fullName",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.firstname.length - b.firstname.length,
+      sorter: (a, b) => a.fullName.length - b.fullName.length,
     },
     {
-      title: "gender",
+      title: t("gender"),
       dataIndex: "gender",
       filters: [
         {
-          text: "male",
+          text: t("male"),
           value: "male",
         },
         {
-          text: "female",
+          text: t("female"),
           value: "female",
         },
         {
-          text: "none",
+          text: t("none"),
           value: "none",
         },
       ],
@@ -48,7 +52,7 @@ function FormTable() {
       sorter: (a, b) => a.gender.length - b.gender.length,
     },
     {
-      title: "phone number",
+      title: t("phone number"),
       dataIndex: "phone",
       filters: [
         {
@@ -69,15 +73,15 @@ function FormTable() {
       sorter: (a, b) => a.phone.length - b.phone.length,
     },
     {
-      title: "nationality",
+      title: t("nationality"),
       dataIndex: "nationality",
       filters: [
         {
-          text: "Thai",
+          text: t("Thai"),
           value: "Thai",
         },
         {
-          text: "Britain",
+          text: t("Britain"),
           value: "Britain",
         },
       ],
@@ -85,7 +89,7 @@ function FormTable() {
         record.nationality.indexOf(value) === 0,
     },
     {
-      title: "manage",
+      title: t("manage"),
       dataIndex: "manage",
     },
   ];
@@ -99,7 +103,7 @@ function FormTable() {
     console.log("params", pagination, filters, sorter, extra);
   };
 
-  let keyForDelete: number[];
+  let keyForDelete: number[] = [];
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       keyForDelete = selectedRowKeys;
@@ -107,34 +111,32 @@ function FormTable() {
   };
 
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    console.log(e.target.checked);
+    // console.log(e.target.checked);
     if (e.target.checked === true) {
       keyForDelete = userData.map((item, index) => {
         return item.key;
       });
-      console.log(keyForDelete);
     } else {
       keyForDelete = [];
-      console.log(keyForDelete);
     }
   };
 
   return (
     <div className="tableContainer">
       <div className="deleteButton">
-        <Checkbox onChange={onCheckAllChange}>select all user</Checkbox>
+        <Checkbox onChange={onCheckAllChange}>{t("select all")}</Checkbox>
         <Popconfirm
-          title="Sure to delete?"
+          title={t("Sure to delete?")}
           onConfirm={() => {
             if (keyForDelete.length > 0) {
               dispatch(deleteUser(keyForDelete));
-              message.success("You have deleted some profile successfully.");
+              message.success(t("You have deleted some profile successfully."));
             } else {
-              message.error("You did not select any row.");
+              message.error(t("You did not select any row."));
             }
           }}
         >
-          <Button>delete user data</Button>
+          <Button>{t("delete user data")}</Button>
         </Popconfirm>
       </div>
       <Table
@@ -151,6 +153,8 @@ function FormTable() {
             onClick: (e) => {
               const index = userData.indexOf(record);
               const value: any = { index: index, boolean: true };
+              getPhoneNumber(index);
+              getIdNumber(index);
               dispatch(setStatus(value));
             },
           };
