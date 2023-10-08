@@ -1,7 +1,12 @@
 import React from "react";
+import ChangeLangBar from "../compernent/changeLangBar";
 
 function Test2() {
-  return <div>Test2</div>;
+  return (
+    <div>
+      <ChangeLangBar />
+    </div>
+  );
 }
 
 export default Test2;

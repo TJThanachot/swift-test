@@ -163,6 +163,11 @@ function FormSubmit() {
               <DatePicker
                 format={"DD-MM-YYYY"}
                 placeholder={t("date-month-year")}
+                // date must less than current--------------------------------------------
+                disabledDate={(current) => {
+                  let customDate = moment().format("DD-MM-YYYY");
+                  return current && current > moment(customDate, "DD-MM-YYYY");
+                }}
               />
             </Form.Item>
           </Col>

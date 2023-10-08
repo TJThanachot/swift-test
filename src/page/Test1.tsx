@@ -46,6 +46,7 @@ function Test1() {
               }}
             >
               <div className="triangle-left"></div>
+              <div className="moveShape">Move shape</div>
             </Card>
           </Col>
           <Col span={10} className="col">
@@ -66,6 +67,7 @@ function Test1() {
                 <div className="triangle-up"></div>
                 <div className="triangle-down"></div>
               </div>
+              <div className="moveShape middle">Move position</div>
             </Card>
           </Col>
           <Col span={5} className="col">
@@ -81,6 +83,7 @@ function Test1() {
               }}
             >
               <div className="triangle-right"></div>
+              <div className="moveShape">Move shape</div>
             </Card>
           </Col>
         </Row>
