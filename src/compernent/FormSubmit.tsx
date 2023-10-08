@@ -8,15 +8,21 @@ import {
   Radio,
   DatePicker,
   Divider,
-  message,
 } from "antd";
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addUser, updateUser, deleteUser } from "../slices/userSlice";
-import { setStatus } from "../slices/statusSlice";
-// import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import useForm from "../hooks/useForm";
+import moment from "moment";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
+import { useTranslation } from "react-i18next";
+
 function FormSubmit() {
-  // const { t, i18n } = useTranslation();
+  const { onReset, onFinish } = useForm();
+
+  const { t, i18n } = useTranslation();
+
   // redux state ---------------------------------------------------------
   const userData = useSelector((state: any) => {
     return state.userDataList;
@@ -24,54 +30,25 @@ function FormSubmit() {
   const status = useSelector((state: any) => {
     return state.status;
   });
-  const dispatch = useDispatch();
+  const userIdNumber = useSelector((state: any) => {
+    return state.userIdNumber;
+  });
+  const userPhoneNumber = useSelector((state: any) => {
+    return state.userPhoneNumber;
+  });
 
   // console.log(status);
   // console.log(userData);
+  // console.log(userPhoneNumber);
 
   const { Option } = Select;
 
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
-    values.idNumber = `${values.idNumberInput1}-${values.idNumberInput2}-${values.idNumberInput3}-${values.idNumberInput4}-${values.idNumberInput5}`;
-    values.phone = `${values.phoneInput1}-${values.phoneInput2}`;
-    values.dateOfBirth = String(values.dateOfBirth.$d);
-
-    // delete key values that is not necessary ------------------------------------
-    for (let i = 1; i <= 5; i++) {
-      const key = `idNumberInput${i}`;
-      const key2 = `phoneInput${i}`;
-      if (values.hasOwnProperty(key)) {
-        delete values[key];
-      }
-      if (values.hasOwnProperty(key2)) {
-        delete values[key2];
-      }
-    }
-
-    // console.log(values);
-    if (status.boolean === true) {
-      const newValues: any = { values, index: status.index };
-      dispatch(updateUser(newValues));
-      message.success("You have updated your profile successfully.");
-    } else {
-      dispatch(addUser(values));
-      message.success("You have created your profile successfully.");
-    }
-
-    const value: any = { index: null, boolean: false };
-    dispatch(setStatus(value));
-    form.resetFields();
-  };
-
-  const onReset = () => {
-    form.resetFields();
-  };
-
   useEffect(() => {
     form.resetFields();
   }, [status]);
+
   return (
     <div className="test3Container">
       <Divider />
@@ -81,13 +58,14 @@ function FormSubmit() {
         onFinish={onFinish}
         className="test3Form"
         initialValues={
+          // initialValues condition ------------------------------------------------------
           status.boolean === false
             ? {
                 prefix: null,
                 firstname: "",
                 lastname: "",
                 dateOfBirth: "",
-                nationality: "",
+                nationality: null,
                 gender: "",
                 idNumberInput1: "",
                 idNumberInput2: "",
@@ -103,18 +81,27 @@ function FormSubmit() {
                 prefix: userData[status.index].prefix,
                 firstname: userData[status.index].firstname,
                 lastname: userData[status.index].lastname,
-                dateOfBirth: "",
-                nationality: "",
-                gender: "",
-                idNumberInput1: "",
-                idNumberInput2: "",
-                idNumberInput3: "",
-                idNumberInput4: "",
-                idNumberInput5: "",
-                phoneInput1: "",
-                phoneInput2: "",
-                passportId: "",
-                expectedSalary: "",
+
+                // need to use dayjs and moment to change format data----------------------
+                dateOfBirth: dayjs(
+                  moment(userData[status.index].dateOfBirth).format(
+                    "DD-MM-YYYY"
+                  ),
+                  "DD-MM-YYYY"
+                ),
+
+                nationality: userData[status.index].nationality,
+                gender: userData[status.index].gender,
+                idNumberInput1: userIdNumber[0],
+                idNumberInput2: userIdNumber[1],
+                idNumberInput3: userIdNumber[2],
+                idNumberInput4: userIdNumber[3],
+                idNumberInput5: userIdNumber[4],
+                phone: userPhoneNumber.join("-"),
+                phoneInput1: userPhoneNumber[0],
+                phoneInput2: userPhoneNumber[1],
+                passportId: userData[status.index].passportId,
+                expectedSalary: userData[status.index].expectedSalary,
               }
         }
       >
@@ -124,22 +111,22 @@ function FormSubmit() {
           <Col span={4}>
             <Form.Item
               name="prefix"
-              label="prefix"
+              label={t("prefix")}
               rules={[
                 { required: true, message: "Please select your prefix!" },
               ]}
             >
-              <Select placeholder="Select a prefix">
-                <Option value="Mr.">Mr.</Option>
-                <Option value="Ms.">Ms.</Option>
-                <Option value="Mrs.">Mrs.</Option>
+              <Select placeholder={t("Select a prefix")}>
+                <Option value="Mr.">{t("Mr.")}</Option>
+                <Option value="Ms.">{t("Ms.")}</Option>
+                <Option value="Mrs.">{t("Mrs.")}</Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={10}>
             <Form.Item
               name="firstname"
-              label="first name"
+              label={t("first name")}
               rules={[
                 {
                   required: true,
@@ -153,7 +140,7 @@ function FormSubmit() {
           <Col span={10}>
             <Form.Item
               name="lastname"
-              label="last name"
+              label={t("last name")}
               rules={[
                 { required: true, message: "Please input your last name!" },
               ]}
@@ -169,16 +156,20 @@ function FormSubmit() {
           <Col span={3.5}>
             <Form.Item
               name="dateOfBirth"
-              label="date of birth"
+              label={t("date of birth")}
               rules={[{ required: true }]}
             >
-              <DatePicker />
+              {/* date of birth picker here --------------------------------------- */}
+              <DatePicker
+                format={"DD-MM-YYYY"}
+                placeholder={t("date-month-year")}
+              />
             </Form.Item>
           </Col>
           <Col span={10}>
             <Form.Item
               name="nationality"
-              label="nationality"
+              label={t("nationality")}
               rules={[
                 {
                   required: true,
@@ -186,9 +177,9 @@ function FormSubmit() {
                 },
               ]}
             >
-              <Select placeholder="Select a nationality" allowClear>
-                <Option value="Thai">Thai</Option>
-                <Option value="Britain">Britain</Option>
+              <Select placeholder={t("Select a nationality")}>
+                <Option value="Thai">{t("Thai")}</Option>
+                <Option value="Britain">{t("Britain")}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -197,7 +188,7 @@ function FormSubmit() {
         {/* third row ---------------------------------------------------------- */}
 
         <Row>
-          <Form.Item name="idNumber" label="id numbers">
+          <Form.Item name="idNumber" label={t("id number")}>
             <Row gutter={16}>
               <Col span={2}>
                 <Form.Item name="idNumberInput1" noStyle>
@@ -236,13 +227,13 @@ function FormSubmit() {
 
         <Form.Item
           name="gender"
-          label="gender"
+          label={t("gender")}
           rules={[{ required: true, message: "Please select your gender!" }]}
         >
           <Radio.Group>
-            <Radio value="male">male</Radio>
-            <Radio value="female">female</Radio>
-            <Radio value="none">none</Radio>
+            <Radio value="male">{t("male")}</Radio>
+            <Radio value="female">{t("female")}</Radio>
+            <Radio value="none">{t("none")}</Radio>
           </Radio.Group>
         </Form.Item>
 
@@ -250,7 +241,7 @@ function FormSubmit() {
         <Row>
           <Form.Item
             name="phone"
-            label="Phone number"
+            label={t("phone number")}
             rules={[
               {
                 required: true,
@@ -277,7 +268,7 @@ function FormSubmit() {
         {/* sixth row ---------------------------------------------------------- */}
         <Row gutter={16}>
           <Col span={10}>
-            <Form.Item name="passportId" label="passportId">
+            <Form.Item name="passportId" label={t("passport id")}>
               <Input />
             </Form.Item>
           </Col>
@@ -289,7 +280,7 @@ function FormSubmit() {
           <Col span={9}>
             <Form.Item
               name="expectedSalary"
-              label="expected salary"
+              label={t("expected salary")}
               rules={[
                 {
                   required: true,
@@ -300,15 +291,19 @@ function FormSubmit() {
               <Input />
             </Form.Item>
           </Col>
+
+          {/* submit button --------------------------------------------------- */}
           <Col span={7}>
             <Form.Item>
               <Row gutter={16} style={{ width: "40rem" }}>
                 <Col offset={10}>
-                  <Button htmlType="submit">Submit</Button>
+                  <Button htmlType="button" onClick={onReset}>
+                    {t("Reset")}
+                  </Button>
                 </Col>
                 <Col>
-                  <Button htmlType="button" onClick={onReset}>
-                    Reset
+                  <Button htmlType="submit">
+                    {status.boolean ? t("Update") : t("Submit")}
                   </Button>
                 </Col>
               </Row>
