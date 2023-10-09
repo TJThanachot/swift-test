@@ -9,6 +9,9 @@ export const en: Record<string, any> = {
   "Form & Table": "Form & Table",
   "Layout & Style": "Layout & Style",
   "Back to home page": "Back to home page",
+  "Move position": "Move position",
+  "Move shape":"Move shape",
+  
 
   //FormSubmit-------------------------
   "prefix": "prefix",
@@ -64,6 +67,8 @@ export const th: Record<string, any> = {
   "Form & Table": "การจัดการหน้าฟอร์ม",
   "Layout & Style": "การจัดการหน้าเว็บ",
   "Back to home page": "กลับสุ่หน้าหลัก",
+  "Move position": "เปลี่ยนตำแแหน่ง",
+  "Move shape":"เลื่อนรูปแบบ",
 
   //FormSubmit-------------------------
   "prefix": "คำนำหน้า",
