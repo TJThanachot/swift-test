@@ -9,6 +9,19 @@ $secondary: #6eda78;
     display: flex;
     justify-content: center;
   }
+  .testContainer2 {
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    .box1 {
+      width: 100%;
+      display: flex;
+    }
+    .box2 {
+      width: 100%;
+      display: flex;
+    }
+  }
 
   .col {
     .test1Card {
