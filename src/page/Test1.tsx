@@ -153,9 +153,16 @@ function Test1() {
                     hoverable
                     className="test1Card shape"
                     onClick={() => {
+                      // console.log(shape1);
                       const newShape1 = [...shape1];
-                      randomShape1(newShape1);
-                      setShape1(newShape1);
+                      const splitNewShape1 = newShape1.flat();
+                      randomShape1(splitNewShape1);
+                      const result = [];
+                      for (let i of splitNewShape1) {
+                        result.push(splitNewShape1.splice(0, shape1[0].length));
+                      }
+                      // console.log(result);
+                      setShape1(result);
                     }}
                   >
                     <div className={`${item} shape`}></div>
